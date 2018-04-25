@@ -66,6 +66,10 @@ int main (){
 	}
 
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, 640, 480, 0, 0);
+	BITMAP *pantalla = create_bitmap(640,480);
+	clear_bitmap(pantalla);
+	int colcamino = makecol(51,153,51);
+	int coljugador = makecol(255,255,0);
 
 	while(!key[KEY_ESC]){
 		//movimiento
@@ -92,6 +96,19 @@ int main (){
 			progreso=99;
 			lineact=ruta[lineact].lina;
 		}
+		//imprimir y weas 
+
+		for(int i=0;i<n;i++){
+			line(pantalla,ruta[i].ini.x,480-ruta[i].ini.y,ruta[i].fin.x,480-ruta[i].fin.y,colcamino);
+		}
+		cords jugador;
+		jugador.x=(int)ruta[lineact].ini.x+(ruta[lineact].fin.x-ruta[lineact].ini.x)*progreso/100 ;
+		jugador.y=(int)ruta[lineact].ini.y+(ruta[lineact].fin.y-ruta[lineact].ini.y)*progreso/100 ;
+		circle(pantalla,jugador.x,480-jugador.y,10,coljugador);
+		blit(pantalla,screen,0,0,0,0,640,480);
+		clear_bitmap(pantalla);
+
+
 	}
 	allegro_exit();
 }END_OF_MAIN()
