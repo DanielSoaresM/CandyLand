@@ -52,22 +52,37 @@ lineas* cargarmapa(string archivo,int* num){
 
 	rutas.close();
 	return ruta;
-
-
 }
-void ctuberias(int linact, int * wea){
+
+
+void ctuberias(int linact, int (&direcion)[4]){
 	//dicionario para lineas actuales
-	//
-	int dic[9]={0,0,2,0,4,0,6,0,8};
-	int arr{{1,0,0,-1}{0,1,-1,0}{1,0,-1,0}{0,1,0,-1}};
+	int dic[9]={0,1,0,3,1,5,2,7,3};
+	int arr[4][4]={1,0,0,-1,0,1,-1,0,1,0,-1,0,0,1,0,-1};
+	cout<<"mover llave"<<endl;
+	for(int i=0;i<4;i++){
+		cout<<direcion[i]<<" ";
+	}
+	cout<<endl;
+	
+
 	while(1){
-		if(key(KEY_D)){
-			arr[dic[lineact]]
+		if(key[KEY_D]){
+			for(int i=0;i<4;i++){
+				*(direcion+i)+=arr[dic[linact]][i];
+				cout<<direcion[i]<<" ";
+			}
+			cout<<"derecha"<<endl;
 			break;
 		}
 
-		if(key(KEY_A)){
-
+		if(key[KEY_A]){
+			for(int i=0;i<4;i++){
+				*(direcion+i)-=arr[dic[linact]][i];
+				cout<<direcion[i]<<" ";
+			}
+			cout<<"izquierda"<<endl;
+			break;
 		}
 	}
 }
@@ -88,6 +103,9 @@ bool jugarnivel1(){
 	int colcamino = makecol(51,153,51);
 	int coljugador = makecol(255,255,0);
 	BITMAP *pantalla = create_bitmap(640,480);
+	BITMAP *tuberia = create_bitmap(20,80);
+	line(tuberia,10,20,10,60,colcamino);
+	circle(tuberia,10,60,7,coljugador);
 	clear_bitmap(pantalla);
 	
 	for(int i=0;i<*n;i++)
@@ -99,32 +117,38 @@ bool jugarnivel1(){
 	circle(pantalla,jugador.x,480-jugador.y,10,coljugador);
 	blit(pantalla,screen,0,0,0,0,640,480);
 	clear_bitmap(pantalla);
-	int tuberias[4]={0,0,0,0};
+
+
+	int tuberias[4]={0,3,0,2};
+	
+
 	while(!key[KEY_ESC]){
 		//movimiento
 		readkey();
-		if(key[KEY_D]){
+		if(key[KEY_D])
 			progreso=progreso+(*(ruta+lineact)).progreso;
-			cout<<lineact<<" "<<progreso<<endl;
-		}
-		
-		if(key[KEY_A]){
+
+		if(key[KEY_A])
 			progreso=progreso-ruta[lineact].progreso;
-			cout<<lineact<<" "<< progreso <<endl;
-		}
-		if(ruta[lineact].cond==1 && key[KEY_W]){
-			ctuberias(lineact,&tuberias)
-		}
+
+		if(ruta[lineact].cond==1 && key[KEY_W])
+			ctuberias(lineact,tuberias);
+
 
 		if(progreso>=100){
 			progreso=1;
 			lineact=ruta[lineact].lins;
 		}
+
 		if(progreso<=0){
 			progreso=99;
 			lineact=ruta[lineact].lina;
 		}
+
 		//imprimir y weas 
+		for(int i=0;i<4;i++){
+			rotate_sprite(pantalla,tuberia,100+150*i,150,itofix(tuberias[i]*64));
+		}
 
 		for(int i=0;i<*n;i++){
 			if ((*(ruta+i)).cond)
